@@ -293,5 +293,8 @@ def alpha(reliability_data: Optional[Iterable[Any]] = None, value_counts: Option
     o = _coincidences(value_counts, dtype=dtype)
     n_v = o.sum(axis=0)
     e = _random_coincidences(n_v, dtype=dtype)
+    # numerical stability
+    e += np.finfo(float).eps
     d = _distances(value_domain, distance_metric, n_v, dtype=dtype)
     return 1 - (o * d).sum() / (e * d).sum()
+
