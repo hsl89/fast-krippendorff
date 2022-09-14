@@ -62,6 +62,9 @@ def _coincidences(value_counts: np.ndarray, dtype: Any = np.float64) -> np.ndarr
     unnormalized_coincidences = value_counts[..., np.newaxis] * value_counts[:, np.newaxis, :] - diagonals
     return np.divide(unnormalized_coincidences, (pairable - 1).reshape((-1, 1, 1)), dtype=dtype).sum(axis=0)
 
+def coincidence(value_counts: np.ndarray, dtype: Any = np.float64)->np.ndarray:
+    return _coincidence(value_counts, dtype)
+
 
 def _random_coincidences(n_v: np.ndarray, dtype: Any = np.float64) -> np.ndarray:
     """Random coincidence matrix.
