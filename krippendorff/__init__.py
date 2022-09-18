@@ -1,1 +1,2 @@
-from krippendorff.krippendorff import alpha, coincidence
+from .krippendorff import *
+# from krippendorff.krippendorff import coincidence

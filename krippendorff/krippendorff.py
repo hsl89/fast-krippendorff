@@ -62,8 +62,6 @@ def _coincidences(value_counts: np.ndarray, dtype: Any = np.float64) -> np.ndarr
     unnormalized_coincidences = value_counts[..., np.newaxis] * value_counts[:, np.newaxis, :] - diagonals
     return np.divide(unnormalized_coincidences, (pairable - 1).reshape((-1, 1, 1)), dtype=dtype).sum(axis=0)
 
-def coincidence(value_counts: np.ndarray, dtype: Any = np.float64)->np.ndarray:
-    return _coincidence(value_counts, dtype)
 
 
 def _random_coincidences(n_v: np.ndarray, dtype: Any = np.float64) -> np.ndarray:
@@ -155,6 +153,12 @@ def _reliability_data_to_value_counts(reliability_data: np.ndarray, value_domain
         and V is the value count.
     """
     return (reliability_data.T[..., np.newaxis] == value_domain[np.newaxis, np.newaxis, :]).sum(axis=1)  # noqa
+
+def coincidence(reliability_data: np.ndarray, value_domain: np.ndarray,
+            dtype: Any = np.float64)->np.ndarray:
+    value_counts = _reliability_data_to_value_counts(reliability_data, value_domain)
+    return _coincidences(value_counts, dtype)
+
 
 
 def alpha(reliability_data: Optional[Iterable[Any]] = None, value_counts: Optional[np.ndarray] = None,
