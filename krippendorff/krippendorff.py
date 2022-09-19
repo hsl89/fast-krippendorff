@@ -154,12 +154,24 @@ def _reliability_data_to_value_counts(reliability_data: np.ndarray, value_domain
     """
     return (reliability_data.T[..., np.newaxis] == value_domain[np.newaxis, np.newaxis, :]).sum(axis=1)  # noqa
 
-def coincidence(reliability_data: np.ndarray, value_domain: np.ndarray,
+def coincidences(reliability_data: np.ndarray, value_domain: np.ndarray,
             dtype: Any = np.float64)->np.ndarray:
     value_counts = _reliability_data_to_value_counts(reliability_data, value_domain)
     return _coincidences(value_counts, dtype)
 
+def raw_agreement(reliability_data: np.ndarray, value_domain: np.ndarray)->float:
 
+    value_counts = _reliability_data_to_value_counts(reliability_data, value_domain)
+    N, V = value_counts.shape
+    pairable = np.maximum(value_counts.sum(axis=1), 2)
+    diagonals = value_counts[:, np.newaxis, :] * np.eye(V)[np.newaxis, ...]
+    unnormalized_coincidences = value_counts[..., np.newaxis] * value_counts[:, np.newaxis, :] - diagonals
+    
+    o = unnormalized_coincidences.sum(axis=0)
+    d = o - np.eye(*o.shape)*np.diag(o)
+    a = np.diag(o).sum()
+    return a / (o.sum() + a) 
+   
 
 def alpha(reliability_data: Optional[Iterable[Any]] = None, value_counts: Optional[np.ndarray] = None,
           value_domain: Optional[Sequence[Any]] = None,
